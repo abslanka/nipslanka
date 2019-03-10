@@ -1,0 +1,215 @@
+import {
+  DynaFormElementTypesObject,
+  DynaFormElementTypes,
+} from "../../../../layout/dyna-form/dyna-form-elements"
+
+import { ITdDynamicElementConfig } from "@covalent/dynamic-forms"
+
+/* export const generateJobProviderContactFormFields = () => {
+  let formFields: ITdDynamicElementConfig[] = []
+
+  let name = DynaFormElementTypesObject(
+    "name",
+    "Contact Name",
+    45,
+    DynaFormElementTypes.Text,
+    true
+  )
+  let email = DynaFormElementTypesObject(
+    "email",
+    "Email",
+    45,
+    DynaFormElementTypes.TextCustom,
+    true
+  )
+  let phone = DynaFormElementTypesObject(
+    "phone",
+    "Phone",
+    45,
+    DynaFormElementTypes.TextCustom
+  )
+  let address = DynaFormElementTypesObject(
+    "address",
+    "Contact Address",
+    45,
+    DynaFormElementTypes.Textarea
+  )
+
+  //  let button = DynaFormElementTypesObject(
+  //   "buttonContinue",
+  //   "Continue",
+  //   40,
+  //   DynaFormElementTypes.Button
+  // )
+
+  // let spacer = DynaFormElementTypesObject(
+  //   "spacer",
+  //   "Spacer",
+  //   undefined,
+  //   DynaFormElementTypes.Spacer
+  // )
+
+  formFields.push(name)
+  formFields.push(email)
+
+  formFields.push(address)
+  //formFields.push(spacer)
+  formFields.push(phone)
+  // formFields.push(button)
+
+  return formFields
+} */
+
+/* export const generateCompanyFormFields = () => {
+  let formFields: ITdDynamicElementConfig[] = []
+
+  let name = DynaFormElementTypesObject(
+    "name",
+    "Company Name",
+    45,
+    DynaFormElementTypes.Text,
+    true
+  )
+
+  let industryType = DynaFormElementTypesObject(
+    "industryType",
+    "Company Industry",
+    45,
+    DynaFormElementTypes.TextCustom
+  )
+
+  let profileDesc = DynaFormElementTypesObject(
+    "profileDesc",
+    "Profile Description",
+    45,
+    DynaFormElementTypes.Textarea
+  )
+
+  let websiteUrl = DynaFormElementTypesObject(
+    "websiteUrl",
+    "Website Url",
+    45,
+    DynaFormElementTypes.TextCustom
+  )
+
+  formFields.push(name)
+  formFields.push(industryType)
+  formFields.push(profileDesc)
+  formFields.push(websiteUrl)
+
+  return formFields
+} */
+
+/* export const generateVacancyFormFields = () => {
+  let formFields: ITdDynamicElementConfig[] = []
+
+  let position = DynaFormElementTypesObject(
+    "position",
+    "Job Position",
+    undefined,
+    DynaFormElementTypes.Text,
+    true
+  )
+  formFields.push(position)
+
+  let description = DynaFormElementTypesObject(
+    "description",
+    "Job Description",
+    undefined,
+    DynaFormElementTypes.Textarea
+  )
+  formFields.push(description)
+
+  let jobType = DynaFormElementTypesObject("type", "Job Type", undefined) // full/part time
+  formFields.push(jobType)
+
+  let location = DynaFormElementTypesObject(
+    "location",
+    "Job Location",
+    undefined
+  )
+  formFields.push(location)
+
+  return formFields
+} */
+
+/* export const generateVacancySkillsFormFields = () => {
+  let formFields: ITdDynamicElementConfig[] = []
+
+  let skills = DynaFormElementTypesObject(
+    "skills",
+    "Skills",
+    undefined,
+    DynaFormElementTypes.Textarea
+  )
+  formFields.push(skills)
+
+  let experience = DynaFormElementTypesObject(
+    "experience",
+    "Experience",
+    undefined,
+    DynaFormElementTypes.Textarea
+  )
+  formFields.push(experience)
+
+  let qualifications = DynaFormElementTypesObject(
+    "qualifications",
+    "Preferred Qualifications",
+    undefined,
+    DynaFormElementTypes.Textarea
+  )
+  formFields.push(qualifications)
+
+  let education = DynaFormElementTypesObject(
+    "education",
+    "Preferred Education",
+    undefined,
+    DynaFormElementTypes.Textarea
+  )
+
+  formFields.push(education)
+
+  return formFields
+} */
+
+/* export const generateJobOrderFormFields = () => {
+  let formFields: ITdDynamicElementConfig[] = []
+
+  let noOfOpenings = DynaFormElementTypesObject(
+    "noOfOpenings",
+    "# No. Of Openings",
+    undefined,
+    DynaFormElementTypes.NumberRange,
+    true
+  )
+  formFields.push(noOfOpenings)
+
+  let closingDate = DynaFormElementTypesObject(
+    "closingDate",
+    "Closing Date",
+    undefined,
+    DynaFormElementTypes.DateType
+  )
+  formFields.push(closingDate)
+
+  //remuneration: JobRemuneration,
+  let salary = DynaFormElementTypesObject(
+    "salary",
+    "Salary",
+    undefined,
+    DynaFormElementTypes.Text,
+    true
+  )
+  formFields.push(salary)
+
+  let benefits = DynaFormElementTypesObject(
+    "benefits",
+    "Other Benefits",
+    undefined,
+    DynaFormElementTypes.Textarea
+  )
+  formFields.push(benefits)
+
+  return formFields
+}
+ */

@@ -1,0 +1,41 @@
+.icon-n-txt-valign {
+  display: flex;
+  align-items: center;
+}
+
+.nav-button {
+  margin: 0 40px 0 0;
+}
+
+.content-bg {
+  background-color: white;
+  height: 100%;
+}
+
+.nopad {
+  margin-top: 0;
+  margin-bottom: 5px;
+  padding: 0;
+}
+
+
+:host {
+  display: block;
+  padding: 32px;
+  border: 1px solid black;
+  border-radius: 8px;
+}
+
+.header {
+  background-color: #e3e3e3;
+}
+
+.side {
+  background-color: #e3e3ff;
+}
+
+
+
+.footer {
+  background-color: #ffe3e3;
+}

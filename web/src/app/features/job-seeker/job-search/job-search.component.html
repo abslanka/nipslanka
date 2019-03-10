@@ -1,0 +1,78 @@
+<mat-card layout-align="start center" color="accent" class="pad-none push-none pad-top-xl" flex>
+  <mat-card-content flex>
+
+
+    <div layout-gt-xs="row">
+      <span flex="5"></span>
+      <div layout="column" flex="90">
+
+        <!--  <table #dataTable td-data-table>
+          <thead>
+            <tr td-data-table-column-row>
+              <ng-container *ngFor="let column of columns">
+
+                <th *ngIf="!column.hidden" td-data-table-column [numeric]="column.numeric">
+                  <ng-container *ngIf="!column.hidden"> {{column.label}}</ng-container>
+                </th>
+              </ng-container>
+
+              <th td-data-table-column>
+                <mat-icon>comment</mat-icon>
+                <span>Comments</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr td-data-table-row *ngFor="let row of filteredData">
+              <ng-container *ngFor="let column of columns">
+                <td td-data-table-cell *ngIf="!column.hidden" [numeric]="column.numeric">
+                  {{
+                  displayColumnValue(row, column)
+                  }}
+                </td>
+              </ng-container>
+              <td td-data-table-cell (click)="openPrompt(row, 'comments')" align="start">
+                <button mat-button [class.mat-accent]="!row['comments']">{{row['comments'] || 'Add Comment'}}</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="md-padding" *ngIf="!dataTable.hasData" layout="row" layout-align="center center">
+          <h3>No results to display.</h3>
+        </div>
+        <td-paging-bar #pagingBar [pageSize]="pageSize" [total]="filteredTotal" (change)="page($event)">
+          <span hide-xs>Rows per page:</span>
+          <mat-select [style.width.px]="3" [(ngModel)]="pageSize">
+            <mat-option *ngFor="let size of [3,10,20,50]" [value]="size">
+              {{size}}
+            </mat-option>
+          </mat-select>
+          {{pagingBar.range}} <span hide-xs>of {{pagingBar.total}}</span>
+        </td-paging-bar> -->
+
+
+        <td-data-table #dataTable [data]="filteredData" [columns]="columns" [clickable]="clickable" [resizableColumns]="resizableColumns"
+          [(ngModel)]="selectedRows" (rowClick)="openJobDetailsWindow($event)">
+        </td-data-table>
+        <div class="md-padding" *ngIf="!dataTable.hasData" layout="row" layout-align="center center">
+          <h3>No results to display.</h3>
+        </div>
+        <td-paging-bar #pagingBar [pageSize]="pageSize" [total]="filteredTotal" (change)="page($event)">
+          <span hide-xs>Rows per page:</span>
+          <mat-select [style.width.px]="5" [(ngModel)]="pageSize">
+            <mat-option *ngFor="let size of [5,10,20,50]" [value]="size">
+              {{size}}
+            </mat-option>
+          </mat-select>
+          {{pagingBar.range}} <span hide-xs>of {{pagingBar.total}}</span>
+        </td-paging-bar>
+
+      </div>
+    </div>
+
+
+  </mat-card-content>
+
+
+</mat-card>

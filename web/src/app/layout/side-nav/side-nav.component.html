@@ -1,0 +1,108 @@
+<ng-container *ngIf="media.registerQuery('gt-sm') | async; then subNavContainer; else subMenuContainer">
+</ng-container>
+
+
+
+
+<ng-template #subMenuContainer>
+  <div layout-gt-sm="column" tdMediaToggle="gt-xs" [mediaClasses]="['push-top-none','pad-top-none']">
+    <td-layout-card-over color="accent" cardWidth="90" flex>
+      <mat-card *ngIf="(subMenuRoutes$ |async).length" class="pad-none push-none">
+
+        <mat-card-actions layout-align="start center" flex>
+          <div layout="row" layout-align="start center" flex>
+            <span flex></span>
+
+            <ng-template ngFor let-item="$implicit" [ngForOf]="subMenuRoutes$.getValue()" let-i="index">
+              <ng-container  class="pad-none push-none" *ngTemplateOutlet="menuItemRef;context:{item:item, parentUrl:parentUrl}"></ng-container>
+            </ng-template>
+
+            <!-- 
+        <button color="primary" flex mat-raised-button layout-align="start center" class=" nav-button" *ngFor="let item of routes"
+          [routerLink]="[item.route]" routerLinkActive="active">
+          {{item.title | translate}}
+        </button>
+-->
+            <span flex></span>
+          </div>
+        </mat-card-actions>
+
+      </mat-card>
+
+      <!-- <ng-content></ng-content>
+  <div flex>
+    <mat-card>
+      <mat-card-content layout="column" layout-align="center center" class="text-center" fullscreen>
+         
+        <router-outlet></router-outlet>
+      </mat-card-content>
+    </mat-card>
+  </div>
+-->
+
+      <router-outlet></router-outlet>
+
+    </td-layout-card-over>
+
+  </div>
+</ng-template>
+
+
+<ng-template #subNavContainer>
+
+  <div class="side-nav-container" layout-gt-sm="column" tdMediaToggle="gt-xs" [mediaClasses]="['push-top-none','pad-top-none']">
+
+    <mat-sidenav-container class="content-bg" color="accent" flex>
+
+      <mat-sidenav #sidenav [position]="position" flex [opened]="media.registerQuery('gt-sm') | async" [mode]="(media.registerQuery('gt-sm') | async) ? 'side' :  'over'">
+        <!-- p><button mat-button (click)="sidenav.toggle()">Toggle</button></p -->
+        <span flex></span>
+        <mat-nav-list td-sidenav-content>
+          <ng-template ngFor let-item="$implicit" [ngForOf]="subMenuRoutes$.getValue()" let-i="index">
+            <ng-container *ngTemplateOutlet="menuItemRef;context:{item:item, parentUrl:parentUrl}"></ng-container>
+          </ng-template>
+        </mat-nav-list>
+        <span flex></span>
+        <div layout="row" layout-margin layout.align="start center" flex>
+          <span *ngIf="isNavPositionLeft()" flex> </span>
+          <button mat-icon-button (click)="changeNavPostion()">
+            <mat-icon color="accent">swap_horiz</mat-icon>
+          </button>
+        </div>
+        <span flex></span>
+      </mat-sidenav>
+
+      <mat-sidenav-content>
+        <router-outlet></router-outlet>
+      </mat-sidenav-content>
+
+
+    </mat-sidenav-container>
+
+  </div>
+
+</ng-template>
+
+
+<ng-template let-item="item" let-parentUrl="parentUrl" #menuItemRef>
+
+  <mat-list-item>
+    <button color="primary" flex mat-raised-button layout-align="start center" [ngClass]="{'pad-none':true,'push-none':true,'nav-button':true, 'active': router.isActive(parentUrl+item.url, false)}"
+      [routerLink]="[item.path]" routerLinkActive="menu-item-active">
+      <ng-container *ngIf="media.registerQuery('gt-sm') | async; else titleMini">
+        {{item.title | translate}}
+      </ng-container>
+
+      <ng-template #titleMini>
+        {{item.titleMini | translate}}
+      </ng-template>
+
+
+    </button>
+  </mat-list-item>
+
+
+
+
+
+</ng-template>

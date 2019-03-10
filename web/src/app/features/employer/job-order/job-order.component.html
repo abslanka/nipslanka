@@ -1,0 +1,277 @@
+<mat-card layout-align="start center" color="accent" class="pad-none push-none pad-top-xl" flex>
+  <mat-card-content flex>
+    <form [formGroup]="jobOrderForm" (ngSubmit)="createJobOrder()" novalidate>
+      <!-- <form #jobOrderForm="ngForm" (ngSubmit)="save(jobOrderForm.form.valid)" novalidate> -->
+
+      <!-- 
+  1. Select or Create Company
+  2. Select or Create Contact
+  3. Vacancies
+  4. Employment Terms and condistion ,  closing date 
+
+company: [0],
+vacancies: [0, Validators.required],
+standardEmploymentContract: [""],
+status: [0],
+closingDate: [""],
+
+
+-->
+
+      <div layout-gt-xs="row">
+        <span flex="5"></span>
+        <div layout="column" flex="80">
+          <mat-card class="pad-bottom-lg push-left-none push-right-none">
+            <mat-card-header>
+              <mat-card-title>Employer Company / Organization</mat-card-title>
+            </mat-card-header>
+
+            <mat-card-content>
+              <mat-list layout="column" flex="80">
+                <mat-list-item layout="column" layout-gt-xs="row" flex>
+                  <div flex="45">
+                    <mat-form-field flex>
+                      <input autofocus matInput name="company" formControlName="company" placeholder="Select Employer Company / Organization"
+                        aria-label="Company / Organization" [matAutocomplete]="auto" />
+
+                      <!-- mat-icon matSuffix>arrow_drop_down</mat-icon -->
+                      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onCompanySelection($event)"
+                        [displayWith]="displayFn">
+                        <mat-option *ngFor="
+                            let company of (companyListAutoComplete$ | async)
+                              ?.data
+                          "
+                          [value]="company">
+                          {{ company.name }}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                  </div>
+                  <span flex="5"></span>
+                  <div flex>
+                    <button type="button" mat-stroked-button color="accent" (click)="openCompanyWindow()" class="z-3"
+                      matTooltip="New Company" matTooltipPosition="above" flex>
+                      Or Create New Company
+                    </button>
+                  </div>
+                  <span flex="45"></span>
+                </mat-list-item>
+              </mat-list>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        <span flex></span>
+      </div>
+
+      <div layout-gt-xs="row">
+        <span flex="5"></span>
+        <div layout="column" flex="80">
+          <mat-card class="pad-none push-none">
+            <mat-card-header>
+              <mat-card-title>Vacancies</mat-card-title>
+            </mat-card-header>
+
+            <mat-card-content class="pad-none push-none">
+              <mat-list layout="column" flex="80">
+                <mat-list-item layout="column" layout-gt-xs="row" flex>
+                  <div flex="25">{{ displayedColumns.jobPosition }}</div>
+                  <span flex="5"></span>
+                  <div flex="15">{{ displayedColumns.noOfOpenings }}</div>
+                  <span flex="5"></span>
+                  <div flex="20">{{ displayedColumns.salary }}</div>
+                  <span flex="5"></span>
+                  <div flex="25">{{ displayedColumns.location }}</div>
+                </mat-list-item>
+                <ng-container formArrayName="vacancies" *ngFor="let vacancy of vacancies.controls; let i = index">
+                  <mat-list-item layout-gt-xs="row" [formGroupName]="i" flex>
+                    <!--  <mat-form-field flex="25">
+                  
+                      <input
+                        matInput
+                        name="jobPosition"
+                        formControlName="jobPosition"
+                        required
+                        [ngClass]="{
+                          'required-field-invalid': vacancy
+                            .get('jobPosition')
+                            .hasError('required')
+                        }"
+                      />
+                      <mat-error
+                        *ngIf="vacancy.get('jobPosition').hasError('required')"
+                        >Job Position is required</mat-error
+                      >
+                    </mat-form-field> -->
+
+                    <mat-form-field flex="25">
+                      <input type="text" aria-label="Job Position" matInput formControlName="jobPosition"
+                        [matAutocomplete]="autoJPos" required [ngClass]="{
+                          'required-field-invalid': vacancy
+                            .get('jobPosition')
+                            .hasError('required')
+                        }" />
+                      <mat-error *ngIf="vacancy.get('jobPosition').hasError('required')">Job Position is required</mat-error>
+
+                      <mat-autocomplete #autoJPos="matAutocomplete" [displayWith]="displayJobOptionFn">
+                        <mat-option *ngFor="
+                            let option of (
+                              jobPositionListAutoComplete$[i] | async
+                            )?.data
+                          "
+                          [value]="option">
+                          {{ option.name }}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+
+                    <span flex="5"></span>
+
+                    <mat-form-field flex="15">
+                      <!-- placeholder="No Of Opennings" -->
+                      <input matInput name="noOfOpenings" formControlName="noOfOpenings" required [ngClass]="{
+                          'required-field-invalid': vacancy
+                            .get('noOfOpenings')
+                            .hasError('required')
+                        }" />
+                      <mat-error *ngIf="vacancy.get('noOfOpenings').hasError('required')">No. Of Openings is required</mat-error>
+                      <mat-error *ngIf="
+                          vacancy.get('noOfOpenings').hasError('invalidNumber')
+                        ">Only
+                        numbers accepted !</mat-error>
+                    </mat-form-field>
+
+                    <span flex="5"></span>
+
+                    <mat-form-field flex="20">
+                      <input matInput name="salary" formControlName="salary" />
+                      <!-- <mat-hint>Please provide the basic salary</mat-hint> -->
+                      <mat-error *ngIf="vacancy.get('salary').hasError('invalidNumber')">Only numbers accepted !</mat-error>
+                    </mat-form-field>
+
+                    <input type="hidden" name="jobsAvailable" formControlName="jobsAvailable" />
+
+                    <span flex="5"></span>
+
+                    <mat-form-field flex="25">
+                      <input matInput name="location" formControlName="location" />
+                      <!-- <mat-hint>Please provide the job location: City/Country</mat-hint> -->
+                    </mat-form-field>
+
+                    <!--  <span *ngIf="!last(i)" flex></span>
+                    <div *ngIf="last(i)" flex> <button mat-stroked-button type="button" color="accent" (click)="addNewVacancy()"
+                        class="text-upper" [disabled]="false" [ngClass]="{'submit-button-active':false}">Add
+                        More Vacancy</button> </div> -->
+                  </mat-list-item>
+                </ng-container>
+
+                <mat-list-item layout="row" layout.align="end end" flex>
+                  <span flex></span> <span flex></span> <span flex></span>
+                  <div flex>
+                    <button mat-stroked-button type="button" color="accent" (click)="addVacancy()" class="text-upper"
+                      [disabled]="!isLastVacancyFormValid()">
+                      Add More Vacancy
+                    </button>
+                  </div>
+                </mat-list-item>
+              </mat-list>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        <span flex></span>
+      </div>
+
+
+
+      <div layout-gt-xs="row" layout-margin layout.align="start center" flex>
+        <!--  <mat-divider mat-inset flex="80"></mat-divider> -->
+        <span flex> </span>
+      </div>
+
+      <div layout-gt-xs="row" flex>
+        <span flex="5"></span>
+        <mat-form-field flex="30">
+          <input matInput name="closingDate" formControlName="closingDate" [matDatepicker]="closingDatePicker"
+            placeholder="Vacancies Closing Date" [min]="minClosingDate" [max]="maxClosingDate" required />
+
+          <mat-datepicker-toggle matSuffix [for]="closingDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #closingDatePicker></mat-datepicker>
+        </mat-form-field>
+
+        <span flex></span>
+
+        <mat-form-field flex="30">
+          <mat-select name="status" formControlName="status" placeholder="Order Status" (selectionChange)="onStatusSelection($event)">
+            <!-- n-New, h-Halt, c-Cancel, p-pending, pf-part-filled, f-filled , r-Reject -->
+            <mat-option value="n">New</mat-option>
+            <mat-option value="h">Halted</mat-option>
+            <mat-option value="c">Cancelled</mat-option>
+            <mat-option value="p" disabled>Pending</mat-option>
+            <mat-option value="pf" disabled>Partially Filled</mat-option>
+            <mat-option value="f" disabled>Filled</mat-option>
+            <mat-option value="r" disabled>Reject</mat-option>
+
+            <mat-option *ngFor="let status of statusList" [value]="status">
+              {{ status }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <span flex="15"> </span>
+      </div>
+
+      <div layout-gt-xs="row" flex>
+        <span flex="5"></span>
+        <mat-form-field flex="50">
+          <textarea matInput placeholder="Standard Employment Contract" matTextareaAutosize matAutosizeMinRows="3"
+            matAutosizeMaxRows="15" formControlName="standardEmploymentContract"></textarea>
+        </mat-form-field>
+
+        <span flex="15"></span>
+
+        <div layout="row" layout-margin layout.align="start center" flex>
+          <button mat-raised-button type="submit" color="accent" (click)="jobOrderDyFormContinue()" class="text-upper"
+            [disabled]="jobOrderDyFormSubmitDisabled()" [ngClass]="{
+              'submit-button-active': !jobOrderDyFormSubmitDisabled()
+            }">
+            Create Job Order
+          </button>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+
+  <mat-card-actions flex>
+    <div layout="row" layout-margin layout.align="start center" flex>
+      <span flex> </span>
+      <!-- <button mat-raised-button (click)="dyFormReset()" color="accent" class="text-upper" [ngClass]="'submit-button-active'">Clear-{{stepLabel}}</button>
+      <span flex="5"></span>
+-->
+      <!--
+      <button mat-raised-button type="submit" color="accent" [disabled]="dyFormContinueDisabled()" (click)="dyFormSubmit()"
+        class="text-upper" [ngClass]="{'submit-button-active':!dyFormContinueDisabled()}">Continue to
+        {{nextStep()}} ... </button>
+      <span flex="10"></span>
+-->
+
+      <!--  <button mat-raised-button type="submit" color="accent" (click)="jobOrderDyFormContinue()" class="text-upper"
+        [disabled]="jobOrderDyFormSubmitDisabled()" [ngClass]="{'submit-button-active':!jobOrderDyFormSubmitDisabled()}">Create
+        Job Order</button>
+      <span flex="10"></span> -->
+    </div>
+  </mat-card-actions>
+</mat-card>
+
+<!-- 
+<ng-container *ngTemplateOutlet="createOrderTemplate;context:{dyFormSubmitDisabled:dyFormSubmitDisabled, dyFormSubmit:dyFormSubmit(), buttonTitle:'Create Job Order' }">
+      </ng-container>
+
+<ng-template #createOrderTemplate let-dyFormSubmitDisabled="dyFormSubmitDisabled" let-dyFormSubmit="dyFormSubmit"
+  let-buttonTitle="buttonTitle">
+
+  <button flex="15" mat-raised-button type="submit" color="accent" [disabled]="dyFormSubmitDisabled()" (click)="dyFormSubmit()"
+    class="text-upper" [ngClass]="'submit-button-active'">{{buttonTitle}}</button>
+  <span flex="10"></span>
+
+</ng-template>
+
+-->

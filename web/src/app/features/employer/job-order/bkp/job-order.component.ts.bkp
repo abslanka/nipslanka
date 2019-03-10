@@ -1,0 +1,550 @@
+import { Component, OnInit, ViewChild, AfterViewInit } from "@angular/core"
+
+import { ActivatedRoute } from "@angular/router"
+import { FormControl, AbstractControl } from "@angular/forms"
+import { Observable, observable, of } from "rxjs"
+
+import {
+  startWith,
+  map,
+  debounceTime,
+  mergeMapTo,
+  mergeMap,
+  switchMap,
+  catchError,
+} from "rxjs/operators"
+
+import {
+  StepState,
+  IStepChangeEvent,
+  TdStepComponent,
+} from "@covalent/core/steps"
+import {
+  ITdDynamicElementConfig,
+  TdDynamicFormsComponent,
+} from "@covalent/dynamic-forms"
+
+import { DataService } from "../../../core/data-service/data-service.service"
+import { DynaFormService } from "../../../layout/dyna-form/dyna-form.service"
+import { DynaFormComponent } from "../../../layout/dyna-form/dyna-form.component"
+import {
+  ContactFormFields,
+  CompanyFormFields,
+  VacancyFormFields,
+  VacancySkillsFormFields,
+  JobOrderFormFields,
+  JobOrderVacancyFormFields,
+} from "./form-config"
+
+import {
+  Connect,
+  JobOrderDto,
+  JobOrderVacancyDto,
+  JobProviderDto,
+  CompanyDto,
+  JobVacancyDto,
+} from "../../../models/dto"
+
+@Component({
+  selector: "app-job-order",
+  templateUrl: "./job-order.component.html",
+  styleUrls: ["./job-order.component.scss"],
+})
+export class JobOrderComponent implements OnInit, AfterViewInit {
+  // Section to define variables used in each Steps ...
+
+  // 1. Job Provider Step
+  // #jobProviderStep
+  jobProviderState: StepState // = StepState.Required
+
+  jobProviderLabel = "Select Employer"
+  jobProviderSubLabel = ""
+  //jobProviderSubmitLabel = "Enter Employer Contact Details"
+  jobProviderFormLabel = "Contact Details"
+
+  @ViewChild("jobProviderStep")
+  jobProviderStep: TdStepComponent
+
+  @ViewChild("jobProviderDyForm")
+  jobProviderDyForm: DynaFormComponent
+
+  jobProviderFormFields: ITdDynamicElementConfig[] = ContactFormFields()
+
+  jobProviderDyFormValues: any
+
+  getJobProviderDyForm(): TdDynamicFormsComponent {
+    return this.jobProviderDyForm.dynamicForm
+  }
+
+  jobProviderDyFormSubmitDisabled() {
+    return !!!this.getJobProviderDyForm().valid
+  }
+
+  jobProviderDyFormContinue() {
+    //console.log("jobProviderDyForm", jobProviderDyFormValues)
+
+    let controls: any = this.getJobProviderDyForm().controls
+    let isValid = this.getJobProviderDyForm().valid // this.validateEmptyFormFields(controls)
+
+    /*     const name: AbstractControl = this.jobProviderDyForm.dynamicForm.controls[
+      "address"
+    ]
+  */
+
+    /*     const control: AbstractControl = this.manualValidateForm.controls['vowelsElement'];
+    if (control.value.match(/[^aeiou]/)) {
+      this.manualValidateForm.controls['vowelsElement'].setErrors({ consonants: 'Only vowel characters. Do not use any consonants.' });
+    } */
+
+    let controls2: any = this.getCompanyDyForm().controls
+    let isValid2 = this.getCompanyDyForm().valid // this.validateEmptyFormFields(controls2)
+
+    if (isValid && isValid2) {
+      this.jobProviderDyFormValues = this.jobProviderDyForm.dynamicForm.form.value
+      this.companyDyFormValues = this.companyDyForm.dynamicForm.form.value
+      this.jobProviderState = StepState.Complete
+      this.jobProviderStep.active = false
+      //this.companyStep.active = true
+      this.vacancyStep.active = true
+      this.jobProviderSubLabel = ""
+      return true
+    } else {
+      this.jobProviderState = StepState.Required
+      this.jobProviderSubLabel =
+        "Please fill all the required* fields and continue..."
+    }
+
+    return false
+  }
+
+  private validateEmptyFormFields(controls: any) {
+    let isValid = true
+    for (const c in controls) {
+      console.log(c, controls[c].value)
+      if (!controls[c].value || controls[c].value.length == 0) {
+        isValid = false
+        controls[c].setErrors({
+          consonants: "Please enter a value and continue.",
+        })
+      }
+    }
+    return isValid
+  }
+
+  jobProviderDyFormReset() {
+    this.jobProviderStep.active = false
+    this.jobProviderState = StepState.Required
+    this.jobProviderDyForm.dynamicForm.refresh()
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // 2. Company Step
+  companyLabel = "Employer-Company Info"
+  companySubLabel = ""
+  companyFormLabel = "Employer Company"
+
+  @ViewChild("companyStep")
+  companyStep: TdStepComponent
+
+  companyState: StepState // = StepState.Required
+
+  @ViewChild("companyDyForm")
+  companyDyForm: DynaFormComponent
+
+  companyFormFields: ITdDynamicElementConfig[] = CompanyFormFields()
+
+  companyDyFormValues: any
+
+  getCompanyDyForm(): TdDynamicFormsComponent {
+    return this.companyDyForm.dynamicForm
+  }
+
+  companyDyFormSubmitDisabled() {
+    return !!!this.getCompanyDyForm().valid
+  }
+
+  companyDyFormContinue() {
+    this.companyDyFormValues = this.getCompanyDyForm().form.value
+
+    let controls: any = this.getCompanyDyForm().controls
+    let isValid = this.validateEmptyFormFields(controls)
+
+    if (isValid) {
+      this.companyDyFormValues = this.getCompanyDyForm().form.value
+      this.companyState = StepState.Complete
+      this.companyStep.active = false
+      this.vacancyStep.active = true
+      this.companySubLabel = ""
+    } else {
+      this.companyState = StepState.Required
+      this.companySubLabel = "Please fill all the fields and continue..."
+    }
+  }
+
+  companyDyFormReset() {
+    this.companyStep.active = false
+    this.companyState = StepState.Required
+    this.companyDyForm.dynamicForm.refresh()
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // 3. Vacancy Step
+  vacancyLabel = "Select Vacant Position(s)"
+  vacancySubLabel = ""
+  vacancyFormLabel = "Job Position"
+  vacancySkillsFormLabel = "Job Requirements"
+
+  @ViewChild("vacancyStep")
+  vacancyStep: TdStepComponent
+
+  vacancyState: StepState // = StepState.Required
+
+  @ViewChild("vacancyDyForm")
+  vacancyDyForm: DynaFormComponent
+
+  vacancyFormFields: ITdDynamicElementConfig[] = VacancyFormFields()
+
+  vacancyDyFormValues: any
+
+  @ViewChild("vacancySkillsDyForm")
+  vacancySkillsDyForm: DynaFormComponent
+
+  vacancySkillsFormFields: ITdDynamicElementConfig[] = VacancySkillsFormFields()
+
+  vacancySkillsDyFormValues: any
+
+  getVacancyDyForm(): TdDynamicFormsComponent {
+    return this.vacancyDyForm.dynamicForm
+  }
+
+  getVacancySkillsDyForm(): TdDynamicFormsComponent {
+    return this.vacancySkillsDyForm.dynamicForm
+  }
+
+  vacancyDyFormSubmitDisabled() {
+    return (
+      !!!this.vacancyDyForm.dynamicForm.valid ||
+      !!!this.vacancySkillsDyForm.dynamicForm.valid
+    )
+  }
+
+  vacancyDyFormContinue() {
+    //this.vacancyDyFormValues = this.vacancyDyForm.dynamicForm.form.value
+
+    //let controls: any = this.getVacancyDyForm().controls
+    let isValid = this.getVacancyDyForm().valid // this.validateEmptyFormFields(controls)
+
+    //let controls2: any = this.getVacancySkillsDyForm().controls
+    let isValid2 = this.getVacancySkillsDyForm().valid //  this.validateEmptyFormFields(controls2)
+
+    if (isValid && isValid2) {
+      this.vacancyDyFormValues = this.getVacancyDyForm().form.value
+      this.vacancySkillsDyFormValues = this.getVacancySkillsDyForm().form.value
+      this.vacancyState = StepState.Complete
+      this.vacancyStep.active = false
+      this.jobOrderStep.active = true
+      this.vacancySubLabel = ""
+
+      return true
+    } else {
+      this.vacancyState = StepState.Required
+      this.vacancySubLabel =
+        "Please fill all the required* fields and continue..."
+    }
+
+    return false
+  }
+
+  vacancyDyFormReset() {
+    this.vacancyStep.active = false
+    this.vacancyState = StepState.Required
+    this.vacancyDyForm.dynamicForm.refresh()
+    this.vacancySkillsDyForm.dynamicForm.refresh()
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // 4. Job Order Step
+  jobOrderLabel = "Create Job-Order"
+  jobOrderSubLabel = ""
+  jobOrderSubmitLabel = "Create a Job Order"
+
+  @ViewChild("jobOrderStep")
+  jobOrderStep: TdStepComponent
+
+  jobOrderState: StepState // = StepState.Required
+
+  @ViewChild("jobOrderDyForm")
+  jobOrderDyForm: DynaFormComponent
+
+  jobOrderFormFields: ITdDynamicElementConfig[] = JobOrderFormFields()
+
+  jobOrderDyFormValues: any
+
+  isJobOrderDyFormValid: boolean = false
+
+  @ViewChild("jobOrderVacancyDyForm")
+  jobOrderVacancyDyForm: DynaFormComponent
+
+  jobOrderVacancyFormFields: ITdDynamicElementConfig[] = JobOrderVacancyFormFields()
+
+  jobOrderVacancyDyFormValues: any
+
+  getJobOrderVacancyDyForm(): TdDynamicFormsComponent {
+    return this.jobOrderVacancyDyForm.dynamicForm
+  }
+
+  getJobOrderDyForm(): TdDynamicFormsComponent {
+    return this.jobOrderDyForm.dynamicForm
+  }
+
+  cnt: number = 0
+  jobOrderDyFormSubmitDisabled() {
+    this.isJobOrderDyFormValid =
+      this.stepNo < 3
+        ? this.isJobOrderDyFormValid
+        : this.getJobOrderDyForm().valid
+    return !this.isJobOrderDyFormValid
+
+    //return !!!this.getJobOrderDyForm().valid || this.stepNo < 3
+  }
+
+  jobOrderDyFormContinue() {
+    this.jobOrderDyFormValues = this.getJobOrderDyForm().form.value
+
+    let isValid = this.getJobOrderDyForm().valid
+
+    if (!this.jobProviderDyFormContinue() || !this.vacancyDyFormContinue())
+      return false
+
+    if (isValid) {
+      this.jobOrderDyFormValues = this.getJobOrderDyForm().form.value
+      this.jobOrderState = StepState.Complete
+      //this.jobOrderStep.active = false
+      this.jobOrderSubLabel = ""
+      this.createJobOrder()
+    } else {
+      this.jobOrderState = StepState.Required
+      this.jobOrderSubLabel =
+        "Please fill all the required* fields and continue..."
+    }
+  }
+
+  jobOrderDyFormReset() {
+    this.jobOrderStep.active = false
+    this.jobOrderState = StepState.Required
+    this.jobOrderDyForm.dynamicForm.refresh()
+  }
+
+  stepNo: number = 1
+  step: TdStepComponent = this.jobProviderStep
+  stepState: StepState = this.jobProviderState
+  dyForm: DynaFormComponent = this.jobProviderDyForm
+  stepLabel: string = this.jobProviderLabel
+  fnDyFormContinue = this.jobProviderDyFormContinue // jobOrderDyFormContinue;
+  cachedNextStepCtx: any = {}
+  cachedPrevStepCtx: any = {}
+
+  dyFormContinueDisabled() {
+    return !!!this.dyForm.dynamicForm.valid || !(this.stepNo < 3)
+  }
+
+  dyFormSubmitDisabled() {
+    return !!!this.dyForm.dynamicForm.valid || this.stepNo < 3
+  }
+
+  dyFormSubmit() {
+    this.fnDyFormContinue()
+  }
+
+  dyFormReset() {
+    this.step.active = false
+    this.stepState = StepState.Required
+    this.dyForm.dynamicForm.refresh()
+  }
+
+  nextStep() {
+    let nextStepNo = (this.stepNo % 3) + 1
+    nextStepNo = this.stepNo == 3 ? this.stepNo : this.stepNo + 1
+
+    if (
+      !this.cachedNextStepCtx ||
+      this.cachedNextStepCtx.stepNo != nextStepNo
+    ) {
+      this.cachedNextStepCtx = this.getStepContext(nextStepNo)
+    }
+
+    if (this.cachedNextStepCtx) return this.cachedNextStepCtx.stepLabel
+
+    return "NA"
+  }
+
+  stepDeactivated(stepNo: number) {
+    this.cachedPrevStepCtx = this.getStepContext(stepNo)
+  }
+
+  stepActivated(stepNo: number) {
+    this.stepNo = stepNo
+    let stepCtx = this.getStepContext(this.stepNo)
+    //console.log("stepActivated - step#", stepNo)
+    this.step = stepCtx.step
+    this.stepState = stepCtx.stepState
+    this.dyForm = stepCtx.dyForm
+    this.stepLabel = stepCtx.stepLabel
+    this.fnDyFormContinue = stepCtx.fnDyFormContinue
+  }
+
+  getStepContext(stepNo: number) {
+    switch (stepNo) {
+      case 1:
+        return {
+          stepNo,
+          step: this.jobProviderStep,
+          stepState: this.jobProviderState,
+          dyForm: this.jobProviderDyForm,
+          stepLabel: this.jobProviderLabel,
+          fnDyFormContinue: this.jobProviderDyFormContinue,
+        }
+
+        break
+
+      /*   case 2:
+        return {
+          step: this.companyStep,
+          stepState: this.companyState,
+          dyForm: this.companyDyForm,
+          stepLabel: this.companyLabel,
+          fnDyFormContinue: this.jobProviderDyFormContinue,
+        }
+
+        break */
+
+      case 2:
+        return {
+          stepNo,
+          step: this.vacancyStep,
+          stepState: this.vacancyState,
+          dyForm: this.vacancyDyForm,
+          stepLabel: this.vacancyLabel,
+          fnDyFormContinue: this.vacancyDyFormContinue,
+        }
+
+        break
+
+      case 3:
+        return {
+          stepNo,
+          step: this.jobOrderStep,
+          stepState: this.jobOrderState,
+          dyForm: this.jobOrderDyForm,
+          stepLabel: this.jobOrderLabel,
+          fnDyFormContinue: this.jobOrderDyFormContinue,
+        }
+
+        break
+
+      default:
+        return undefined
+        break
+    }
+  }
+
+  stepChanged(event: IStepChangeEvent): void {
+    console.log("stepChanged event >> ", event)
+  }
+
+  // elements: ITdDynamicElementConfig[] = []
+
+  endpoint = { path: undefined }
+
+  extendEndpoint(extPath: string) {
+    let ep = { path: this.endpoint.path }
+    ep.path = `${ep.path}${extPath}`
+
+    return ep
+  }
+
+  constructor(
+    public route: ActivatedRoute,
+    private _dataService: DataService<JobOrderDto>,
+    private _dynaFormService: DynaFormService
+  ) {
+    this.endpoint.path = `/${route.routeConfig.data.name}`
+    this._dataService.createRestEndpoint(this.endpoint)
+
+    //this.test()
+  }
+
+  ngOnInit() {
+    //console.log("ngOnInit")
+    //this.initializeAutoCompleteSrc();
+  }
+
+  ngAfterViewInit(): void {
+    //console.log("ngAfterViewInit")
+    this.isJobOrderDyFormValid = this.getJobOrderDyForm().valid
+  }
+
+  jobOrderResp: Observable<JobOrderDto>
+  async createJobOrder(): Promise<void> {
+    try {
+      let jobProvider: JobProviderDto = this.getJobProviderDyForm().form.value
+      let company: CompanyDto = this.getCompanyDyForm().form.value
+      let vacancies: JobVacancyDto[] = [this.getVacancyDyForm().form.value]
+      //let vacancy: JobVancyDto = this.getVacancyDyForm().form.value
+      //vacancies.push(vacancy)
+
+      let jobOrderDTO: JobOrderDto = this.getJobOrderDyForm().form.value
+      jobOrderDTO.jobProvider = jobProvider
+      jobOrderDTO.company = company
+      // jobOrderDTO.vacancies = vacancies
+
+      this.jobOrderResp = await this._dataService //.rest
+        .create(this.extendEndpoint("/create"), jobOrderDTO)
+        .toPromise()
+      //console.log("this.endpoint.path", this.endpoint.path)
+      console.log("jobOrderResp", this.jobOrderResp)
+    } catch (error) {
+      console.error(error, "in createJobOrder")
+    } finally {
+    }
+  }
+
+  /* 
+  
+  public jobOrderAutoComplete$: Observable<JobOrderDto> = null
+  public autoCompleteControl = new FormControl()
+  lookup(value: string): Observable<JobOrderDto> {
+    return this._dataService.rest.query({ search: value.toLowerCase() }).pipe(
+      // map the joborder property of the api results as the return object
+      map(results => results),
+      // catch errors
+      catchError(_ => {
+        return of(null)
+      })
+    )
+  }
+
+ private initializeAutoCompleteSrc() {
+    this.jobOrderAutoComplete$ = this.autoCompleteControl.valueChanges.pipe(startWith(""),
+      // delay emits
+      debounceTime(2000),
+      // use switch map so as to cancel previous subscribed events, before creating new once
+      switchMap(value => {
+        if (value !== "") {
+          // lookup from api server
+          return this.lookup(value);
+        }
+        else {
+          // if no value is pressent, return null
+          return of(null);
+        }
+      }));
+  } */
+
+  onCompanyFormSubmit(formValue) {
+    console.log("formValue", formValue)
+  }
+}

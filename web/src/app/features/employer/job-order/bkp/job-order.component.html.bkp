@@ -1,0 +1,186 @@
+<mat-card layout-align="start center" color="accent" class="pad-none push-none" flex>
+
+  <mat-card-content flex>
+
+    <!-- <td-steps (stepChange)="stepChanged($event)" mode="horizontal"> -->
+    <td-steps (stepChange)="stepChanged($event)">
+
+      <td-step #jobProviderStep [label]="jobProviderLabel" [active]="true" [state]="jobProviderState" [sublabel]="jobProviderSubLabel"
+        (activated)="stepActivated(1)" (deactivated)="stepDeactivated(1)">
+
+        <div layout="column" layout-gt-sm="row">
+          <mat-card class="pad-none push-none pull-none">
+
+            <td-message label="{{companyFormLabel}}" sublabel="" color="accent" icon=""></td-message>
+            <!-- mat-card-title class="text-lg">Company Info</mat-card-title >
+
+            <mat-divider></mat-divider -->
+            <mat-card-content>
+              <dyna-form #companyDyForm [elements]="companyFormFields"></dyna-form>
+            </mat-card-content>
+
+          </mat-card>
+
+          <mat-card class="pad-none push-none">
+            <!-- mat-card-title class="text-lg ">Contact Info</mat-card-title> 
+<mat-divider>
+  </mat-divider-->
+            <td-message label="{{jobProviderFormLabel}}" sublabel="" color="accent" icon=""></td-message>
+
+            <mat-card-content>
+              <dyna-form #jobProviderDyForm [elements]="jobProviderFormFields"></dyna-form>
+            </mat-card-content>
+
+          </mat-card>
+
+        </div>
+
+        <!--ng-template td-step-actions layout.align="start center" flex>
+          <span flex></span>
+          <button mat-raised-button (click)="jobProviderDyFormReset()" class="text-upper">Clear</button>
+          <span flex="5"></span>
+          <button flex="15" mat-raised-button type="submit" color="primary" [disabled]="jobProviderDyFormSubmitDisabled()"
+            (click)="jobProviderDyFormContinue()" class="text-upper">Save & Continue...</button>
+          <span flex="10"></span>
+        </ng-template-->
+
+      </td-step>
+
+      <!--
+      <td-step #companyStep [label]="companyLabel" [state]="companyState" [sublabel]="companySubLabel" (activated)="stepActivated(2)">
+
+        <dyna-form #companyDyForm [elements]="companyFormFields"></dyna-form> 
+
+        <ng-template td-step-actions layout.align="start center" flex>
+          <span flex></span>
+          <button mat-raised-button (click)="companyDyFormReset()" color="primary" class="text-upper">Clear</button>
+          <span flex="5"></span>
+          <button flex="15" mat-raised-button type="submit" color="primary" [disabled]="companyDyFormSubmitDisabled()"
+            (click)="companyDyFormContinue()" class="text-upper">Save & Continue...</button>
+          <span flex="10"></span>
+
+        </ng-template>
+
+      </td-step>
+-->
+
+      <td-step #vacancyStep [label]="vacancyLabel" [state]="vacancyState" [sublabel]="vacancySubLabel" (activated)="stepActivated(2)"
+        (deactivated)="stepDeactivated(2)">
+
+
+
+        <div layout="column" layout-gt-sm="row">
+          <mat-card class="pad-none push-none pull-none">
+
+            <td-message label="{{vacancyFormLabel}}" sublabel="" color="accent" icon=""></td-message>
+            <!-- mat-card-title class="text-lg">Company Info</mat-card-title >
+
+            <mat-divider></mat-divider -->
+            <mat-card-content>
+              <dyna-form #vacancyDyForm [elements]="vacancyFormFields"></dyna-form>
+            </mat-card-content>
+
+          </mat-card>
+
+          <mat-card class="pad-none push-none">
+            <!-- mat-card-title class="text-lg ">Contact Info</mat-card-title> 
+<mat-divider>
+  </mat-divider-->
+            <td-message label="{{vacancySkillsFormLabel}}" sublabel="" color="accent" icon=""></td-message>
+
+            <mat-card-content>
+              <dyna-form #vacancySkillsDyForm [elements]="vacancySkillsFormFields"></dyna-form>
+            </mat-card-content>
+
+          </mat-card>
+
+        </div>
+
+
+        <!--ng-template td-step-actions layout.align="start center" flex>
+          <span flex></span>
+          <button mat-raised-button (click)="vacancyDyFormReset()" color="primary" class="text-upper">Clear</button>
+          <span flex="5"></span>
+          <button flex="15" mat-raised-button type="submit" color="primary" [disabled]="vacancyDyFormSubmitDisabled()"
+            (click)="vacancyDyFormContinue()" class="text-upper">Save & Continue...</button>
+          <span flex="10"></span>
+
+        </ng-template-->
+
+      </td-step>
+
+
+
+
+
+
+
+      <td-step #jobOrderStep [label]="jobOrderLabel" [state]="jobOrderState" [sublabel]="jobOrderSubLabel" (activated)="stepActivated(3)"
+        (deactivated)="stepDeactivated(3)">
+
+        <dyna-form #jobOrderDyForm [elements]="jobOrderFormFields"></dyna-form>
+
+        <dyna-form #jobOrderVacancyDyForm [elements]="jobOrderVacancyFormFields"></dyna-form>
+
+
+
+        <!-- ng-template td-step-actions layout="row" layout-margin layout.align="start center" flex>
+          <span flex></span>
+          <button mat-raised-button (click)="jobOrderDyFormReset()" color="primary" class="text-upper">Clear</button>
+          <span flex="10"></span>
+
+        </ng-template -->
+
+      </td-step>
+
+
+
+
+
+    </td-steps>
+
+  </mat-card-content>
+
+  <mat-divider></mat-divider>
+
+  <mat-card-actions flex>
+
+    <div layout="row" layout-margin layout.align="start center" flex>
+
+      <span flex> </span>
+      <!-- <button mat-raised-button (click)="dyFormReset()" color="accent" class="text-upper" [ngClass]="'submit-button-active'">Clear-{{stepLabel}}</button>
+      <span flex="5"></span>
+-->
+      <!--
+      <button mat-raised-button type="submit" color="accent" [disabled]="dyFormContinueDisabled()" (click)="dyFormSubmit()"
+        class="text-upper" [ngClass]="{'submit-button-active':!dyFormContinueDisabled()}">Continue to
+        {{nextStep()}} ... </button>
+      <span flex="10"></span>
+-->
+
+      <button mat-raised-button type="submit" color="accent" [disabled]="jobOrderDyFormSubmitDisabled()" (click)="jobOrderDyFormContinue()"
+        class="text-upper" [ngClass]="{'submit-button-active':!jobOrderDyFormSubmitDisabled()}">Create Job Order</button>
+      <span flex="10"></span>
+
+
+    </div>
+
+
+  </mat-card-actions>
+
+</mat-card>
+
+<!-- 
+<ng-container *ngTemplateOutlet="createOrderTemplate;context:{dyFormSubmitDisabled:dyFormSubmitDisabled, dyFormSubmit:dyFormSubmit(), buttonTitle:'Create Job Order' }">
+      </ng-container>
+
+<ng-template #createOrderTemplate let-dyFormSubmitDisabled="dyFormSubmitDisabled" let-dyFormSubmit="dyFormSubmit"
+  let-buttonTitle="buttonTitle">
+
+  <button flex="15" mat-raised-button type="submit" color="accent" [disabled]="dyFormSubmitDisabled()" (click)="dyFormSubmit()"
+    class="text-upper" [ngClass]="'submit-button-active'">{{buttonTitle}}</button>
+  <span flex="10"></span>
+
+</ng-template>
+
+-->

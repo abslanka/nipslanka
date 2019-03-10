@@ -1,0 +1,35 @@
+<mat-card layout-align="start center" color="accent" class="pad-none push-none pad-top-xl" flex>
+  <mat-card-content flex>
+
+
+    <div layout-gt-xs="row">
+      <span flex="5"></span>
+      <div layout="column" flex="90">
+
+        <mat-list>
+          <mat-list-item>
+            <td-search-box #searchBox backIcon="arrow_back" class="push-right-sm" placeholder="Search here"
+              (searchDebounce)="search($event)" flex>
+            </td-search-box>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <td-virtual-scroll-container #infiniteScroll [data]="infiniteData" (bottom)="fetchMore()">
+            <ng-template let-row="row" let-last="last" tdVirtualScrollRow>
+              <mat-list-item>
+                <mat-icon matListAvatar>person</mat-icon>
+                <h4 matLine>{{row.name}}</h4>
+                <p matLine>Row: {{row.index}}</p>
+              </mat-list-item>
+              <mat-divider *ngIf="!last" [inset]="true"></mat-divider>
+            </ng-template>
+          </td-virtual-scroll-container>
+        </mat-list>
+
+        <div *tdLoading="'loading'; mode:'indeterminate'; type:'linear'; strategy:'overlay'"></div>
+
+      </div>
+    </div>
+  </mat-card-content>
+
+
+</mat-card>

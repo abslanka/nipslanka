@@ -1,0 +1,109 @@
+<h2 mat-dialog-title>{{description}}</h2>
+
+<mat-dialog-content>
+
+
+  <div layout="column" layout-gt-xs="row">
+    <mat-card class="pad-none push-none">
+
+      <mat-card-header>
+        <mat-card-title>Company Details</mat-card-title>
+      </mat-card-header>
+
+      <!-- <mat-divider></mat-divider -->
+      <mat-card-content>
+        <dyna-form #companyDynamicForm [elements]="companyDynamicFormFields"> test </dyna-form>
+
+        <mat-card class="pad-none push-none">
+
+
+
+
+          <mat-card-subtitle>Company Logo</mat-card-subtitle>
+          <mat-card-content>
+
+
+
+            <td-file-upload #singleFileUpload [(ngModel)]="files" (select)="selectEvent($event)" (upload)="uploadEvent($event)"
+              (cancel)="cancelEvent()" [disabled]="disabled" accept=".jpg,.png, .gif, .jpeg, .icon" defaultColor="primary"
+              activeColor="accent" cancelColor="warn">
+              <mat-icon>file_upload</mat-icon><span>Upload Logo: {{ singleFileUpload.value?.name }}</span>
+
+              <ng-template td-file-input-label>
+                <span [hidden]="!singleFileUpload?.required">*</span>
+
+                <span>
+                  Choose Company Logo ...
+                  <mat-icon>attach_file</mat-icon>
+                </span>
+
+              </ng-template>
+            </td-file-upload>
+
+
+          </mat-card-content>
+
+        </mat-card>
+
+
+
+        <!-- <div layout="row" class="" flex>
+
+
+
+          <mat-form-field flex appearance="outline">
+
+
+
+
+
+            <input matInput placeholder="Company Logo" hidden>
+          </mat-form-field>
+
+          <mat-form-field flex appearance="outline">
+            <span flex> test {{fileUploadStatusMsg}}</span>
+            <input matInput placeholder="Company Logo" hidden>
+          </mat-form-field>
+
+
+
+        </div> -->
+      </mat-card-content>
+
+    </mat-card>
+    <mat-divider></mat-divider>
+    <mat-card class="pad-none push-none">
+
+      <mat-card-header>
+        <mat-card-title>Contact Info</mat-card-title>
+      </mat-card-header>
+      <!-- <mat-divider></mat-divider -->
+      <mat-card-content>
+        <dyna-form #contactPersonDynamicForm [elements]="contactPersonDynamicFormFields"></dyna-form>
+      </mat-card-content>
+
+    </mat-card>
+
+  </div>
+
+
+</mat-dialog-content>
+
+
+
+<mat-dialog-actions>
+
+  <div layout="row" layout-margin layout.align="start center" flex>
+    <span flex> </span>
+
+    <button class="mat-raised-button" (click)="close()">
+      Close
+    </button>
+    <span flex="5"> </span>
+    <button class="mat-raised-button mat-primary" (click)="save()">
+      Save
+    </button>
+    <span flex> </span>
+  </div>
+
+</mat-dialog-actions>

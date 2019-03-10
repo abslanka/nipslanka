@@ -1,0 +1,162 @@
+/*
+ * Copyright (C) 2016-2018 by Teradata Corporation. All rights reserved.
+ */
+
+@import '~@angular/material/theming';
+@import '~@covalent/core/theming/all-theme';
+// Plus imports for other components in your app.
+@import "theme-custom-palatte";
+
+
+
+// Custom typography
+$custom-typography: mat-typography-config($button: mat-typography-level(14px, 14px, 400));
+$custom-toolbar-typography: mat-typography-config($title: mat-typography-level(20px, 32px, 400));
+
+// Include the base styles for Angular Material core. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+@include mat-core($custom-typography);
+
+// Setting the toolbar to the proper spec weight
+@include mat-toolbar-typography($custom-toolbar-typography);
+
+// Manually import since we're not using platform.css
+// Include the core styles for Covalent
+@include covalent-core();
+// Include pre-bundled material-icons
+$mat-font-url: '../node_modules/@covalent/core/common/styles/font/';
+@include covalent-material-icons();
+// Include covalent utility classes
+@include covalent-utilities();
+// Include flex layout classes
+@include covalent-layout();
+// Include covalent color classes
+@include covalent-colors();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue.
+$primary: mat-palette($mat-orange, 800, 100, 900);
+$accent: mat-palette($mat-blue-grey, 800, 100, 900);
+
+$nips-primary: mat-palette($custom-primary-color, 800, 100, 900);
+$nips-accent: mat-palette($custom-accent-color, 800, 100, 900);
+
+
+
+// The warn palette is optional (defaults to red).
+$warn: mat-palette($mat-red, 600, 100, 900);
+
+
+// Create the theme object (a Sass map containing all of the palettes).
+$theme: mat-light-theme($nips-primary, $nips-accent, $warn);
+
+
+// Insert custom background color
+$background-color:#ffffff;
+$background: map-get($theme, background);
+$background: map_merge($background, (background: $background-color));
+$theme: map_merge($theme, (background: $background));
+
+
+
+// custom background and foreground palettes
+/* $my-dark-theme-background: (status-bar: map_get($accent, 50),
+app-bar: map_get($accent, 50),
+background: map_get($accent, 800),
+hover: rgba(white, 0.04),
+card: map_get($mat-red, 800),
+dialog: map_get($mat-grey, 800),
+disabled-button: $white-12-opacity,
+raised-button: map-get($mat-grey, 800),
+focused-button: $white-6-opacity,
+selected-button: map_get($mat-grey, 900),
+selected-disabled-button: map_get($mat-grey, 800),
+disabled-button-toggle: black,
+unselected-chip: map_get($mat-grey, 700),
+disabled-list-option: black,
+);
+
+$my-dark-theme-foreground: (base: map_get($accent, 800),
+divider: $white-12-opacity,
+dividers: $white-12-opacity,
+disabled: rgba(white, 0.3),
+disabled-button: rgba(white, 0.3),
+disabled-text: rgba(white, 0.3),
+hint-text: rgba(white, 0.3),
+secondary-text: rgba(white, 0.7),
+icon: white,
+icons: white,
+text: map_get($primary, 50),
+slider-min: white,
+slider-off: rgba(white, 0.3),
+slider-off-active: rgba(white, 0.3),
+); */
+
+
+// instead of creating a theme with mat-light-theme like a sane person, we will create our own theme-creating function that lets us apply our own foreground and background palettes.
+/* @function create-wonky-theme($primary, $accent, $warn: mat-palette($mat-red)) {
+  @return (primary: $primary,
+    accent: $accent,
+    warn: $warn,
+    is-dark: false,
+    foreground: $my-dark-theme-foreground,
+    background: $my-dark-theme-background,
+    );
+}
+
+$theme: create-wonky-theme($nips-primary, $nips-accent, $warn);
+ */
+
+
+
+
+
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($theme);
+@include covalent-theme($theme);
+
+// Active icon color in list nav
+mat-nav-list,
+mat-list {
+  [mat-list-item].active {
+    mat-icon[matListAvatar] {
+      background-color: mat-color($accent);
+      color: mat-color($accent, default-contrast);
+    }
+
+    mat-icon[matListIcon] {
+      color: mat-color($accent);
+    }
+  }
+}
+
+/* ------------------------------------------------------------------------------- */
+$foreground: map-get($theme, foreground);
+
+$background: map-get($theme, background);
+
+
+.menu-item-active2 {
+  font-weight: bold;
+  color: mat-color($nips-accent, darker) !important;
+  background-color: mat-color($nips-primary, default-contrast) !important;
+  border: thin solid mat-color($nips-accent, darker) !important;
+}
+
+.menu-item-active {
+  font-weight: bold;
+  color: mat-color($nips-primary, default-contrast) !important;
+  background-color: mat-color($nips-accent, darker) !important;
+  border: thin solid mat-color($nips-accent, darker) !important;
+}
+
+.submit-button-active {
+  font-weight: bold;
+  color: mat-color($nips-primary, default-contrast) !important;
+  background-color: mat-color($nips-accent, darker) !important;
+  border: thin solid mat-color($nips-accent, darker) !important;
+}

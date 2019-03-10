@@ -1,0 +1,30 @@
+<div layout="row" layout-align="start center" flex>
+
+  <span [routerLink]="['/']" class="cursor-pointer">
+    <ng-container *ngIf="media.registerQuery('gt-sm') | async; else titleMini">
+      {{appTitleLong | translate}}
+    </ng-container>
+
+    <ng-template #titleMini>
+      {{appTitleShort | translate}}
+    </ng-template>
+
+  </span>
+  <span flex></span>
+
+
+  <button mat-raised-button class="push-bottom nav-button" *ngFor="let item of routes" [routerLink]="[item.route]"
+    routerLinkActive="menu-item-active" color="primary">
+    {{item.title | translate}}
+  </button>
+
+  <span flex></span>
+
+  <a *ngIf="media.registerQuery('gt-sm') | async" mat-icon-button matTooltip=" NIPS Lanka" href="http://www.nipslanka.com"
+    target="_blank">
+
+    <img class="logo-image" src="assets/logo.png">
+  </a>
+
+
+</div>

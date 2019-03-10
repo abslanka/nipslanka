@@ -1,0 +1,50 @@
+<div layout-gt-sm="column" tdMediaToggle="gt-xs" [mediaClasses]="['push-top-none','pad-top-none']">
+  <td-layout-card-over color="accent" cardWidth="90" flex>
+    <mat-card *ngIf="(subMenuRoutes$ |async).length" class="pad-none push-none">
+
+      <mat-card-actions layout-align="start center" flex>
+        <div layout="row" layout-align="start center" flex>
+          <span flex></span>
+
+          <ng-template ngFor let-item="$implicit" [ngForOf]="subMenuRoutes$.getValue()" let-i="index">
+            <ng-container *ngTemplateOutlet="menuItemRef;context:{item:item, parentUrl:parentUrl}"></ng-container>
+          </ng-template>
+
+          <!-- 
+        <button color="primary" flex mat-raised-button layout-align="start center" class=" nav-button" *ngFor="let item of routes"
+          [routerLink]="[item.route]" routerLinkActive="active">
+          {{item.title | translate}}
+        </button>
+-->
+          <span flex></span>
+        </div>
+      </mat-card-actions>
+
+    </mat-card>
+
+    <!-- <ng-content></ng-content>
+  <div flex>
+    <mat-card>
+      <mat-card-content layout="column" layout-align="center center" class="text-center" fullscreen>
+         
+        <router-outlet></router-outlet>
+      </mat-card-content>
+    </mat-card>
+  </div>
+-->
+
+    <router-outlet></router-outlet>
+
+  </td-layout-card-over>
+
+</div>
+
+
+<ng-template let-item="item" let-parentUrl="parentUrl" #menuItemRef>
+
+  <button color="primary" flex mat-raised-button layout-align="start center" [ngClass]="{'nav-button':true, 'active': router.isActive(parentUrl+item.url, false)}"
+    [routerLink]="[item.path]" routerLinkActive="menu-item-active">
+    {{item.title | translate}}
+  </button>
+
+</ng-template>

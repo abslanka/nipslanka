@@ -1,0 +1,93 @@
+<div mat-dialog-title layout="row">
+  <h1 matLine>{{ vacancyDto.jobPosition.name }}</h1>
+  <span flex></span>
+</div>
+
+
+
+<mat-dialog-content>
+
+  <div layout="column" layout-margin>
+
+    <!--  <div layout="row" layout-margin>
+        <section flex>
+          <h2 matLine>{{ vacancyDto.jobPosition.name }}</h2>
+        </section>
+      </div> -->
+
+    <mat-card layout-align="start center" class="push-none" flex>
+
+      <mat-card-content flex>
+
+        <div layout="row">
+          <div layout="column">
+            <section flex>
+              <ng-container *ngIf="vacancyDto.jobOrder.company!=undefined">
+                <h3 matLine class="pad-none push-none">{{vacancyDto.jobOrder.company.name}}</h3>
+                <h3 matLine class="pad-none push-none">{{vacancyDto.jobOrder.company.websiteUrl}}</h3>
+              </ng-container>
+              <h4 matLine>Date Posted : {{vacancyDto.jobOrder.createdAt}}</h4>
+            </section>
+          </div>
+          <span flex></span>
+          <div layout="column">
+            <section flex>
+              <h2 matLine class="pad-none push-none">company_logo</h2>
+            </section>
+          </div>
+        </div>
+
+      </mat-card-content>
+
+    </mat-card>
+    <!--     <div layout="row" flex>
+      <span flex></span>
+      <section flex>
+        <button class="mat-raised-button" (click)="close()" flex>Close</button>
+        <button class="mat-raised-button mat-primary" (click)="applyForThisJob()" flex>Apply Now</button>
+      </section>
+      <span flex></span>
+    </div> -->
+
+    <mat-card layout-align="start center" class="push-none" flex>
+
+      <mat-card-content flex>
+
+        <h3 matLine>Job Description</h3>
+        <h5 matLine>{{vacancyDto.jobPosition.description}}</h5>
+      </mat-card-content>
+
+    </mat-card>
+
+
+    <mat-card layout-align="start center" class="push-none" flex>
+
+      <mat-card-content flex>
+        <section flex>
+          <h3 matLine>Prferred Skills</h3>
+          <h5 matLine>{{vacancyDto.jobPosition.skills}}</h5>
+        </section>
+
+        <section flex>
+          <h3 matLine>Prferred Experience</h3>
+          <h5 matLine>{{vacancyDto.jobPosition.experience}}</h5>
+        </section>
+      </mat-card-content>
+
+    </mat-card>
+
+  </div>
+
+</mat-dialog-content>
+
+
+<mat-dialog-actions flex>
+
+  <span flex></span>
+  <section flex>
+    <button class="mat-raised-button" (click)="close()" flex>Close</button>
+    <button class="mat-raised-button mat-primary" (click)="applyForThisJob()" flex>Apply Now</button>
+  </section>
+  <span flex></span>
+
+</mat-dialog-actions>
